@@ -1,0 +1,206 @@
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+(defcfg
+  process-unmapped-keys yes
+  movemouse-smooth-diagonals yes
+)
+
+(deffakekeys
+  to-base (layer-switch dvorak)
+)
+
+(defvar
+  ;; Note: consider using different time values for your different fingers.
+  ;; For example, your pinkies might be slower to release keys and index
+  ;; fingers faster.
+  tap-time 200
+  hold-time 200
+
+  left-hand-keys (
+    q w e r t
+    a s d f g
+    z x c v b
+  )
+  right-hand-keys (
+    y u i o p
+    h j k l ;
+    n m , . /
+  )
+)
+
+(defalias
+  tap (multi
+    (layer-switch nomods)
+    (on-idle-fakekey to-base tap 20)
+  )
+  ;; toggle layer aliases
+  num (layer-toggle numbers)
+  chr (layer-toggle chords)
+  arr (layer-toggle arrows)
+  msc (layer-toggle misc)
+  mse (layer-toggle mouse)
+  cpn (layer-toggle capsen)
+
+  ;; change the base layer between qwerty and dvorak
+  dvk (layer-switch dvorak)
+
+  ;; tap-hold keys with letters for tap and layer change for hold
+  anm (tap-hold-release $tap-time $hold-time (multi a @tap) @num)
+  oar (tap-hold-release $tap-time $hold-time (multi s @tap) @arr)
+  ech (tap-hold-release $tap-time $hold-time (multi d @tap) @chr)
+  umc (tap-hold-release $tap-time $hold-time (multi f @tap) @msc)
+  .ms (tap-hold-release $tap-time $hold-time (multi e @tap) @mse)
+  ccn (tap-hold-release $tap-time $hold-time esc @cpn)
+
+  ;; tap for capslk, hold for lctl
+  cap (tap-hold-release $tap-time $hold-time caps lctl)
+
+  hc (tap-hold-release-keys $tap-time $hold-time (multi m @tap) rctl $right-hand-keys)
+  ,s (tap-hold-release-keys $tap-time $hold-time (multi , @tap) rsft $right-hand-keys)
+  .a (tap-hold-release-keys $tap-time $hold-time (multi . @tap) ralt $right-hand-keys)
+  /m (tap-hold-release-keys $tap-time $hold-time (multi / @tap) lmet $right-hand-keys)
+
+  vc (tap-hold-release-keys $tap-time $hold-time (multi v @tap) rctl $right-hand-keys)
+  cs (tap-hold-release-keys $tap-time $hold-time (multi c @tap) rsft $right-hand-keys)
+  xa (tap-hold-release-keys $tap-time $hold-time (multi x @tap) ralt $right-hand-keys)
+  zm (tap-hold-release-keys $tap-time $hold-time (multi z @tap) lmet $right-hand-keys)
+
+  ;; chords
+  csv C-S-v
+  csc C-S-c
+)
+
+(deflocalkeys-linux
+  pho 445
+)
+
+(defalias
+  ;; shifted keys
+  { S-[
+  } S-]
+  : S-;
+  chl M-spc
+  ctt C-tab
+  ral (tap-hold-release $tap-time $hold-time sldr ralt)
+)
+
+(defalias
+  alp (multi a b c d e f g h i j k l m n o p q r s t u v w x y z)
+  ls (macro l s spc min a l ret)
+)
+
+(deflayer dvorak
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    @.ms _    _    _    _    _    _    _    _    _    _
+  @ccn @anm @oar @ech @umc _    _    _    _    _    _    _    _
+  _    @zm  @xa  @cs  @vc  _    _    @hc @,s  @.a  @/m  _
+  _    _    _              _              _    _    _
+)
+
+(deflayer nomods
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  @ccn a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft
+  lctl lmet lalt           spc            ralt rmet rctl
+)
+
+(deflayer capsen
+  caps _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    @ctt _    _    _    left down up   rght _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              @chl           _    _    _
+)
+
+(deflayer numbers
+  _    _    _    _    _    _    nlk  7    8    9    _    _    _    _
+  _    _    C-S-tab C-tab _ XX  _    4    5    6    min  _    _    _
+  @ccn _    C-z  C-y  M-tab XX  _    1    2    3    +    _    _
+  _    C-z  C-x  C-c  C-v  XX   _    0    0    .    /    _
+  _    _    _              _              _    _    _
+)
+
+(deflayer misc
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    ins  @{   @}    [   ]    _    _    _
+  @ccn _    _    _    C-u  _    C-bspc bspc esc ret _    _    _
+  _    C-z  C-x  C-c  C-v  _    _    del  _    _    _    _
+  _    _    _              _              _    _    _
+)
+
+(deflayer chords
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _    _    _    _    _    _    @csc _    @ls  _    _    _
+  @ccn @alp _    _    C-u  _    C-d  _    S-;  _    C-s  _    _
+  _    _    _    _    _    _    C-b  _    _    @csv _    _
+  _    _    _              _              _    _    _
+)
+
+(deflayer arrows
+  _    f1   f2   f3   f4   f5   f6   f7   f8   f9   f10  f11  f12  _
+  _    _    _    _    _    _    C-S-tab pgup up pgdn C-tab _  _    _
+  @ccn _    _    _    _    _    home left down rght end  _    _
+  _    _    _    _    _    _    _    _    C-w  _    _    _
+  _    _    _              _              _    _    _
+)
+
+(defalias
+  mwu (mwheel-up 50 120)
+  mwd (mwheel-down 50 120)
+  mwl (mwheel-left 50 120)
+  mwr (mwheel-right 50 120)
+  mau (movemouse-accel-up 2 750 1 5)
+  mal (movemouse-accel-left 2 750 1 5)
+  mad (movemouse-accel-down 2 750 1 5)
+  mar (movemouse-accel-right 2 750 1 5)
+)
+
+(deflayer mouse
+  _    _    _    _    _    _    _    _    _    _    _    _    _    _
+  _    @mwu bck  _    fwd  _    _    @mwd @mwu _    _    _    _    _
+  @ccn @mwd mlft _    mrgt mmid @mal @mad @mau @mar _    _    _
+  _    _    _    _    _    _    _    _    _    _    _    _
+  _    _    _              _              _    _    _
+)
+
+(defseq "git status" (g s t)
+  "git commit --amend --no-edit" (g c a)
+  "git rebase -i HEAD~" (g r e b)
+  "git log --pretty=oneline --abbrev-commit" (g l s)
+  "git diff --ignore-space-change" (g d f)
+  "git diff --cached --ignore-space-change" (g d c)
+  "git push -f" (g p f)
+  "git commit -m 'fix_this_commit_message'" (g c m)
+)
+
+(deffakekeys
+  "git status" (macro g i t spc s t a t u s)
+  "git commit --amend --no-edit" (macro g i t spc c o m m i t spc min min a m e n d spc min min n o min e d i t)
+  "git rebase -i HEAD~" (macro g i t spc r e b a s e spc min i spc S-h S-e S-a S-d S-grv)
+  "git log --pretty=oneline --abbrev-commit" (macro
+    g i t spc l o g spc
+      min min p r e t t y = o n e l i n e spc
+      min min a b b r e v min c o m m i t
+  )
+  "git diff --ignore-space-change" (macro
+    g i t spc d i f f spc
+      min min i g n o r e min s p a c e min c h a n g e
+  )
+  "git diff --cached --ignore-space-change" (macro
+    g i t spc d i f f spc
+      min min c a c h e d spc
+      min min i g n o r e min s p a c e min c h a n g e
+  )
+  "git push -f" (macro g i t spc p u s h spc min f)
+  "git commit -m 'fix_this_commit_message'" (macro
+    g i t spc c o m m i t spc
+      min m spc ' f i x S-min t h i s S-min c o m m i t S-min m e s s a g e '
+  )
+)
